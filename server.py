@@ -8,6 +8,7 @@ import socketserver
 import sys
 
 PORT = int(sys.argv[1])
+Users = {}
 
 class EchoHandler(socketserver.DatagramRequestHandler):
     """
@@ -22,6 +23,9 @@ class EchoHandler(socketserver.DatagramRequestHandler):
         self.wfile.write(b"Hemos recibido tu peticion")
         for line in self.rfile:
             print("El cliente nos manda ", line.decode('utf-8'), self.client_address)
+            Line  = line.decode('utf-8')
+            Users[Line] = self.client_address[0]
+            print(Users)
 
 if __name__ == "__main__":
     # Listens at localhost ('') port 6001
