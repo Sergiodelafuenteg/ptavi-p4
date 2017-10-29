@@ -7,6 +7,7 @@ Clase (y programa principal) para un servidor de eco en UDP simple
 import socketserver
 import sys
 import json
+import time
 
 PORT = int(sys.argv[1])
 
@@ -37,8 +38,12 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         metodo,address,protocol,_,expire = msg.split(' ')
         print(metodo,address,protocol,expire)
         _,address = address.split(':')
-        print(address)
-
+        expire,_,_ = expire.split('\r')
+        print(expire)
+        actual_time = time.time()
+        print(actual_time)
+        exp_time = actual_time + int(expire)
+        print(exp_time)
 
         #_,Line,_,_  = line.decode('utf-8').split(' ')
         #_,address = Line.split(':')
