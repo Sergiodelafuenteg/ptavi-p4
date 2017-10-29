@@ -33,6 +33,17 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
         msg = self.rfile.read().decode('utf-8')
         print(msg, self.client_address)
+        print(msg.split(' '))
+        metodo,address,protocol,_,expire = msg.split(' ')
+        print(metodo,address,protocol,expire)
+        _,address = address.split(':')
+        print(address)
+
+
+        #_,Line,_,_  = line.decode('utf-8').split(' ')
+        #_,address = Line.split(':')
+
+
 
 if __name__ == "__main__":
     # Listens at localhost ('') port 6001
