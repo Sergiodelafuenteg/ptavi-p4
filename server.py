@@ -20,7 +20,7 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
 
     def register2json(self):
         """metodo para registrar usuarios en json"""
-        with open(registerde_json, 'w') as outfile:
+        with open('registered.json', 'w') as outfile:
             json.dump(self.Users, outfile, indent=3)
 
 
@@ -44,7 +44,11 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         print(actual_time)
         exp_time = actual_time + int(expire)
         print(exp_time)
-
+        vtime = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(exp_time))
+        print(vtime)
+        self.Users[address] = {'address': self.client_address[0], 'expire': vtime}
+        print(self.Users)
+        self.register2json()
         #_,Line,_,_  = line.decode('utf-8').split(' ')
         #_,address = Line.split(':')
 
