@@ -31,8 +31,8 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         """
         self.wfile.write(b"Hemos recibido tu peticion")
         self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
-        for line in self.rfile:
-            print("El cliente nos manda ", line.decode('utf-8'), self.client_address)
+        msg = self.rfile.read().decode('utf-8')
+        print(msg, self.client_address)
 
 if __name__ == "__main__":
     # Listens at localhost ('') port 6001
