@@ -15,7 +15,7 @@ try:
 
     METODO = LINE[0].upper()
     ADDRESS = "sip:" + LINE[1]
-    PROTOCOL = 'SIP/2.0 \r\n'
+    PROTOCOL = 'SIP/2.0\r\n'
     EXPIRES = 'Expires: ' + LINE[2] + '\r\n\r\n'
     DATA = ' '.join([METODO,ADDRESS,PROTOCOL,EXPIRES])
 except IndexError:
