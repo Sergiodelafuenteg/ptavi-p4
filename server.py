@@ -24,7 +24,7 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
             json.dump(self.Users, outfile, indent=3)
 
     def check_exp(self, act_time):
-        """Check time-live of the user"""
+        """Checkear expiracion del user"""
         list_del = []
         for address in self.Users:
             if self.Users[address]['expire'] <= act_time:
@@ -32,15 +32,21 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         for address in list_del:
             del self.Users[address]
 
+    def json2registered(self):
+        try:
+            open('registereed.json', 'r')
+        except:
+            pass
+
     def handle(self):
         """
         handle method of the server class
         (all requests will be handled by this method)
         """
-        self.wfile.write(b"Hemos recibido tu peticion")
+        self.json2registered()
         self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
         msg = self.rfile.read().decode('utf-8')
-        metodo,address,protocol,_,expire = msg.split(' ')
+        metodo,address,protocol,expire = msg.split(' ')
         _,address = address.split(':')
         expire,_,_ = expire.split('\r')
         actual_time = time.time()
@@ -54,15 +60,8 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         self.register2json()
         self.check_exp(time.strftime('%Y-%m-%d %H:%M:%S +0000', time.gmtime(actual_time)))
         print(self.Users)
-        #_,Line,_,_  = line.decode('utf-8').split(' ')
-        #_,address = Line.split(':')
-
-
 
 if __name__ == "__main__":
-    # Listens at localhost ('') port 6001
-    # and calls the EchoHandler class to manage the request
-    #En caso de no llegar register devuelvo 400
     serv = socketserver.UDPServer(('', PORT), SIPRegisterHandler)
 
     print("Lanzando servidor UDP de eco...")
