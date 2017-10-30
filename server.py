@@ -9,8 +9,8 @@ import sys
 import json
 import time
 
-PORT = int(sys.argv[1])
 
+ATTR_TIME = '%Y-%m-%d %H:%M:%S +0000'
 
 class SIPRegisterHandler(socketserver.DatagramRequestHandler):
     """
@@ -34,7 +34,7 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
 
     def json2registered(self):
         try:
-            with open('registered.json','r') as infile:
+            with open('registered.json', 'r') as infile:
                 self.Users = json.loads(infile)
         except:
             pass
@@ -48,24 +48,22 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
             self.json2registered()
         self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
         msg = self.rfile.read().decode('utf-8')
-        metodo,address,protocol,expire = msg.split(' ')
-        _,address = address.split(':')
-        expire,_,_ = expire.split('\r')
+        metodo, address, protocol, expire = msg.split(' ')
+        _, address = address.split(':')
+        expire, _, _ = expire.split('\r')
         actual_time = time.time()
-        print(actual_time)
         exp_time = actual_time + int(expire)
-        print(time.strftime('%Y-%m-%d %H:%M:%S +0000', time.gmtime(actual_time)))
-        exp_time = time.strftime('%Y-%m-%d %H:%M:%S +0000', time.gmtime(exp_time))
-        print(exp_time)
+        exp_time = time.strftime(ATTR_TIME, time.gmtime(exp_time))
         self.Users[address] = {'address': self.client_address[0], 'expire': exp_time}
-        print(exp_time)
         self.register2json()
-        self.check_exp(time.strftime('%Y-%m-%d %H:%M:%S +0000', time.gmtime(actual_time)))
-        print(self.Users)
+        self.check_exp(time.strftime(ATTR_TIME, time.gmtime(actual_time)))
 
 if __name__ == "__main__":
-    serv = socketserver.UDPServer(('', PORT), SIPRegisterHandler)
 
+    if len(sys.argv) != 2:
+        sys.exit("Usage: python3 server.py puerto")
+    PORT = int(sys.argv[1])
+    serv = socketserver.UDPServer(('', PORT), SIPRegisterHandler)
     print("Lanzando servidor UDP de eco...")
     try:
         serv.serve_forever()
