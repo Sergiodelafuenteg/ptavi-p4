@@ -12,12 +12,9 @@ except IndexError:
     sys.exit('Usage: client.py ip puerto register sip_address expires_value')
 
 PORT = int(PORT)
-METODO = METODO.upper()
-ADDRESS = "sip:" + SIP_ADDRESS
 PROTOCOL = 'SIP/2.0\r\n'
-EXPIRES = 'Expires: ' + EXPIRES + '\r\n\r\n'
-DATA = ' '.join([METODO, ADDRESS, PROTOCOL])
-DATA = DATA + EXPIRES
+DATA = ' '.join([METODO.upper(), "sip:" + SIP_ADDRESS, PROTOCOL])
+DATA = DATA + 'Expires: ' + EXPIRES + '\r\n\r\n'
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     my_socket.connect((SERVER, PORT))
     print("Enviando:", DATA)
