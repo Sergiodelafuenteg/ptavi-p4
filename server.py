@@ -34,7 +34,8 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
 
     def json2registered(self):
         try:
-            open('registereed.json', 'r')
+            with open('registered.json','r') as infile:
+                self.Users = json.loads(infile)
         except:
             pass
 
@@ -43,7 +44,8 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         handle method of the server class
         (all requests will be handled by this method)
         """
-        self.json2registered()
+        if not self.Users:
+            self.json2registered()
         self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
         msg = self.rfile.read().decode('utf-8')
         metodo,address,protocol,expire = msg.split(' ')
