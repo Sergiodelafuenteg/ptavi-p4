@@ -9,13 +9,12 @@ import sys
 import json
 import time
 
-
 ATTR_TIME = '%Y-%m-%d %H:%M:%S +0000'
 
+
 class SIPRegisterHandler(socketserver.DatagramRequestHandler):
-    """
-    Echo server class
-    """
+    """Echo server class"""
+    
     Users = {}
 
     def register2json(self):
