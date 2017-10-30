@@ -14,7 +14,6 @@ ATTR_TIME = '%Y-%m-%d %H:%M:%S +0000'
 
 class SIPRegisterHandler(socketserver.DatagramRequestHandler):
     """Echo server class"""
-    
     Users = {}
 
     def register2json(self):
@@ -53,7 +52,8 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         actual_time = time.time()
         exp_time = actual_time + int(expire)
         exp_time = time.strftime(ATTR_TIME, time.gmtime(exp_time))
-        self.Users[address] = {'address': self.client_address[0], 'expire': exp_time}
+        self.Users[address] = {'address': self.client_address[0],
+                               'expire': exp_time}
         self.register2json()
         self.check_exp(time.strftime(ATTR_TIME, time.gmtime(actual_time)))
 
