@@ -23,7 +23,14 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         with open('registered.json', 'w') as outfile:
             json.dump(self.Users, outfile, indent=3)
 
-
+    def check_exp(self, act_time):
+        """Check time-live of the user"""
+        list_del = []
+        for address in self.Users:
+            if self.Users[address]['expire'] <= act_time:
+                list_del.append(address)
+        for address in list_del:
+            del self.Users[address]
 
     def handle(self):
         """
@@ -33,22 +40,20 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
         self.wfile.write(b"Hemos recibido tu peticion")
         self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
         msg = self.rfile.read().decode('utf-8')
-        print(msg, self.client_address)
-        print(msg.split(' '))
         metodo,address,protocol,_,expire = msg.split(' ')
-        print(metodo,address,protocol,expire)
         _,address = address.split(':')
         expire,_,_ = expire.split('\r')
-        print(expire)
         actual_time = time.time()
         print(actual_time)
         exp_time = actual_time + int(expire)
+        print(time.strftime('%Y-%m-%d %H:%M:%S +0000', time.gmtime(actual_time)))
+        exp_time = time.strftime('%Y-%m-%d %H:%M:%S +0000', time.gmtime(exp_time))
         print(exp_time)
-        vtime = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(exp_time))
-        print(vtime)
-        self.Users[address] = {'address': self.client_address[0], 'expire': vtime}
-        print(self.Users)
+        self.Users[address] = {'address': self.client_address[0], 'expire': exp_time}
+        print(exp_time)
         self.register2json()
+        self.check_exp(time.strftime('%Y-%m-%d %H:%M:%S +0000', time.gmtime(actual_time)))
+        print(self.Users)
         #_,Line,_,_  = line.decode('utf-8').split(' ')
         #_,address = Line.split(':')
 
